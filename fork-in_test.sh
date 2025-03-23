@@ -19,7 +19,6 @@ EOF
 done
 
 gcc fork-in.c -o fork-in
-chmod a+x fork-in "${backends[@]}"
 ./fork-in filename.cpp
 ./fork-in filename.lsp
 ./fork-in filename
