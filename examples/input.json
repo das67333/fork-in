@@ -1,0 +1,8 @@
+{
+    "first key": 1,
+    "second key": {
+        "inner_key": [
+            2.5
+        ]
+    }
+}

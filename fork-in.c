@@ -3,10 +3,13 @@
 #include <string.h>
 #include <unistd.h>
 
-const char* dt_ext[] = {"c",  "h",  "cpp", "hpp", "go",
-                        "rs", "py", "js",  "ts",  "json"};
+const char* dt_ext[] = {"go", "rs", "js", "ts"};
 
 const char* lsp_ext[] = {"lsp"}; // There is no lsp team
+
+const char* regex_ext[] = {"md"};
+
+const char* tree_sitter_ext[] = {"json", "c", "h", "cpp", "hpp", "cxx", "py"};
 
 int is_in_array(const char* str, const char** array, int num) {
     for (int i = 0; i < num; ++i) {
@@ -18,12 +21,8 @@ int is_in_array(const char* str, const char** array, int num) {
 }
 
 const char* choose_implementation(const char* filename) {
-    const char* dot = strrchr(filename, '.');
-    // If no extension
-    if (dot == NULL || dot == filename) {
-        return "./fork-in-regex";
-    }
-    const char* ext = dot + 1; // without dot
+    const char* ext = strrchr(filename, '.');
+    ++ext;
 
     // Check dt
     if (is_in_array(ext, dt_ext, sizeof(dt_ext) / sizeof(dt_ext[0]))) {
@@ -35,8 +34,19 @@ const char* choose_implementation(const char* filename) {
         return "./fork-in-lsp";
     }
 
-    // Default to regex
-    return "./fork-in-regex";
+    // Check regex
+    if (is_in_array(ext, regex_ext, sizeof(regex_ext) / sizeof(regex_ext[0]))) {
+        return "./fork-in-regex";
+    }
+
+    // Check tree-sitter
+    if (is_in_array(ext, tree_sitter_ext,
+                    sizeof(tree_sitter_ext) / sizeof(tree_sitter_ext[0]))) {
+        return "./fork-in-tree-sitter";
+    }
+
+    fprintf(stderr, "Unsupported file extension: %s\n", filename);
+    exit(1);
 }
 
 int main(int argc, char* argv[]) {

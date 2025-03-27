@@ -19,6 +19,6 @@ EOF
 done
 
 gcc fork-in.c -o fork-in
-./fork-in filename.cpp
+./fork-in filename.go
 ./fork-in filename.lsp
-./fork-in filename
+./fork-in filename.md
