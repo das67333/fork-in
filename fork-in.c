@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
+#include <errno.h>
 
 const char* dt_ext[] = {"go", "rs", "js", "ts"};
 
@@ -55,9 +56,14 @@ int main(int argc, char* argv[]) {
         exit(EXIT_FAILURE);
     }
 
-    const char* impl = choose_implementation(argv[1]);
-    // Should not return
-    execlp(impl, impl, argv[1], NULL);
+    const char* local_impl = choose_implementation(argv[1]);
+    execlp(local_impl, local_impl, argv[1], NULL);
+    // if cannot find locally, search in PATH
+    if (errno == ENOENT) {
+        errno = 0;
+        const char* path_impl = local_impl + 2;
+        execlp(path_impl, path_impl, argv[1], NULL);
+    }
 
     perror("execlp failed");
     exit(EXIT_FAILURE);
